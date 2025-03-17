@@ -1669,26 +1669,39 @@ def main():
         # Next Steps section
         st.markdown('<div class="sub-header">👣 Next Steps</div>', unsafe_allow_html=True)
         
-        # Create a static expander since we can't use HTML inside markdown
-        with st.expander("Actionable Path Forward", expanded=True):
-            st.markdown("### Actionable Path Forward")
-            st.markdown("Based on our analysis, we recommend the following immediate actions:")
-            
-            # Create the steps as bullet points
+        # Create a card with the same visual style as the others
+        st.markdown("""
+        <div class="card">
+            <h3>Actionable Path Forward</h3>
+            <p>Based on our analysis, we recommend the following immediate actions:</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Add a container for the list with custom styling
+        list_container = st.container()
+        with list_container:
             st.markdown("""
-            1. **Convene a Small Business Advisory Council** comprising diverse stakeholders to provide ongoing feedback during implementation
+            <style>
+            .next-steps-list {
+                background-color: #f8f9fa;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            </style>
             
-            2. **Conduct a Technical Assessment** of existing systems to identify integration points for the centralized portal
-            
-            3. **Develop a Phased Implementation Plan** with clear milestones, starting with the most impactful improvements
-            
-            4. **Establish Key Performance Indicators** to track progress against the expected outcomes
-            
-            5. **Allocate Development Resources** to begin work on the centralized portal prototype
-            """)
-            
-            st.markdown("---")
-            st.markdown("We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.")
+            <div class="next-steps-list">
+                <p><span style="color: #0A2F51; font-weight: bold;">1.</span> <strong>Convene a Small Business Advisory Council</strong> comprising diverse stakeholders to provide ongoing feedback during implementation</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">2.</span> <strong>Conduct a Technical Assessment</strong> of existing systems to identify integration points for the centralized portal</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">3.</span> <strong>Develop a Phased Implementation Plan</strong> with clear milestones, starting with the most impactful improvements</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">4.</span> <strong>Establish Key Performance Indicators</strong> to track progress against the expected outcomes</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">5.</span> <strong>Allocate Development Resources</strong> to begin work on the centralized portal prototype</p>
+                <hr style="margin-top: 15px; margin-bottom: 15px; border-color: #e5e5e5;">
+                <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
+            </div>
+            """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
