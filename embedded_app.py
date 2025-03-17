@@ -9,6 +9,7 @@ import re
 import os
 import logging
 import warnings
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -386,25 +387,38 @@ class SmallBusinessDashboard:
         logger.info("Checking for duplicate responses...")
         
         try:
-            # Check for duplicates based on all columns except ID
+            # Check for duplicates based on basic columns, excluding unhashable types like lists
             id_col = None
             for col in ['id', 'ID']:
                 if col in self.data.columns:
                     id_col = col
                     break
-                    
-            if id_col:
-                duplicate_count = self.data.duplicated(subset=self.data.columns.drop(id_col)).sum()
+            
+            # Find columns with basic types that can be used for duplicate detection
+            # Exclude columns with lists or other unhashable types
+            basic_columns = []
+            for col in self.data.columns:
+                if col != id_col and self.data[col].dtype.name != 'object':
+                    basic_columns.append(col)
+                elif col != id_col:
+                    # Check a sample value to see if it's a basic type
+                    sample_val = self.data[col].iloc[0] if not self.data[col].isna().all() else None
+                    if sample_val is not None and not isinstance(sample_val, (list, dict, set)):
+                        basic_columns.append(col)
+            
+            if id_col and basic_columns:
+                duplicate_count = self.data.duplicated(subset=basic_columns).sum()
                 
                 if duplicate_count > 0:
-                    self.data = self.data.drop_duplicates(subset=self.data.columns.drop(id_col))
-                    logger.info(f"Removed {duplicate_count} duplicate responses")
+                    self.data = self.data.drop_duplicates(subset=basic_columns)
+                    logger.info(f"Removed {duplicate_count} duplicate responses based on {len(basic_columns)} hashable columns")
                 else:
                     logger.info("No duplicate responses found")
             else:
-                logger.info("No ID column found, skipping duplicate removal")
+                logger.info("Skipping duplicate removal - insufficient column data")
         except Exception as e:
             logger.error(f"Error removing duplicates: {str(e)}")
+            # Continue without removing duplicates
     
     def create_derived_features(self):
         """Create derived features for analysis"""
@@ -417,6 +431,7 @@ class SmallBusinessDashboard:
                 complexity_bins = [0, 1, 2, 3, 4, 5]
                 complexity_labels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High']
                 
+                # Create categories with bins and labels
                 self.data['complexity_category'] = pd.cut(
                     self.data['onboarding_complexity'],
                     bins=complexity_bins,
@@ -424,7 +439,10 @@ class SmallBusinessDashboard:
                     right=True
                 )
                 
-                # If any values are null, fill with a placeholder
+                # Convert to standard category type that allows new categories
+                self.data['complexity_category'] = self.data['complexity_category'].astype(str)
+                
+                # Now we can safely fill nulls with a string value
                 self.data['complexity_category'] = self.data['complexity_category'].fillna('Not Rated')
                 
                 logger.info("Derived features created successfully")
@@ -1006,11 +1024,8 @@ class SmallBusinessDashboard:
                     )
                 ),
                 hovertemplate='<b>%{y}</b><br>Count: %{x}<br>Percentage: %{text}<extra></extra>',
-                # Add animation for a more engaging chart
-                # These are the animation settings that will be applied when the chart is first displayed
-                # The animation will make the bars "grow" from left to right
-                animation_frame=None,  # No explicit animation frame
-                # This animation will be triggered on load
+                # Animation is not supported in this version of Plotly
+                # Keeping other settings for visual appeal
                 selector=dict(type='bar')
             )
             
@@ -2182,7 +2197,7 @@ def main():
                             st.markdown(f"""
                             <div class="quote-card">
                                 <div class="sentiment {example['sentiment']}">
-                                    {"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])
+                                    {{"positive": "✓", "neutral": "○", "negative": "!"}}[example['sentiment']]
                                 </div>
                                 <p class="quote-text">"{example['text']}"</p>
                             </div>
@@ -2214,7 +2229,7 @@ def main():
                                     <strong>Sample quote:</strong>
                                     <div class="quote-card">
                                         <div class="sentiment {filtered_examples[0]['sentiment']}">
-                                            {"positive": "✓", "neutral": "○", "negative": "!"}.get(filtered_examples[0]['sentiment'])
+                                            {{"positive": "✓", "neutral": "○", "negative": "!"}[filtered_examples[0]['sentiment']]}
                                         </div>
                                         <p class="quote-text">"{filtered_examples[0]['text']}"</p>
                                     </div>
@@ -2258,7 +2273,7 @@ def main():
                     st.markdown(f"""
                     <div class="quote-card">
                         <div class="sentiment {example['sentiment']}">
-                            {"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])
+                            {{"positive": "✓", "neutral": "○", "negative": "!"}}[example['sentiment']]
                         </div>
                         <p class="quote-text">"{example['text']}"</p>
                     </div>
