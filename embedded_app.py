@@ -1669,31 +1669,26 @@ def main():
         # Next Steps section
         st.markdown('<div class="sub-header">👣 Next Steps</div>', unsafe_allow_html=True)
         
-        # Use separate elements for the different parts of the card to avoid formatting issues
-        st.markdown("""
-        <div class="card">
-            <h3>Actionable Path Forward</h3>
-            <p>Based on our analysis, we recommend the following immediate actions:</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Create next steps using Streamlit components rather than HTML
-        next_steps = [
-            "**Convene a Small Business Advisory Council** comprising diverse stakeholders to provide ongoing feedback during implementation",
-            "**Conduct a Technical Assessment** of existing systems to identify integration points for the centralized portal",
-            "**Develop a Phased Implementation Plan** with clear milestones, starting with the most impactful improvements",
-            "**Establish Key Performance Indicators** to track progress against the expected outcomes",
-            "**Allocate Development Resources** to begin work on the centralized portal prototype"
-        ]
-        
-        for i, step in enumerate(next_steps, 1):
-            st.markdown(f"**{i}.** {step}")
+        # Create a static expander since we can't use HTML inside markdown
+        with st.expander("Actionable Path Forward", expanded=True):
+            st.markdown("### Actionable Path Forward")
+            st.markdown("Based on our analysis, we recommend the following immediate actions:")
             
-        st.markdown("""
-        <div class="card" style="margin-top: 20px;">
-            <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
-        </div>
-        """, unsafe_allow_html=True)
+            # Create the steps as bullet points
+            st.markdown("""
+            1. **Convene a Small Business Advisory Council** comprising diverse stakeholders to provide ongoing feedback during implementation
+            
+            2. **Conduct a Technical Assessment** of existing systems to identify integration points for the centralized portal
+            
+            3. **Develop a Phased Implementation Plan** with clear milestones, starting with the most impactful improvements
+            
+            4. **Establish Key Performance Indicators** to track progress against the expected outcomes
+            
+            5. **Allocate Development Resources** to begin work on the centralized portal prototype
+            """)
+            
+            st.markdown("---")
+            st.markdown("We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.")
 
 if __name__ == "__main__":
     main()
