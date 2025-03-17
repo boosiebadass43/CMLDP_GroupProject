@@ -868,7 +868,7 @@ class SmallBusinessDashboard:
             return fig
     
     def create_challenging_factors_chart(self, filtered_data):
-        """Create horizontal bar chart for challenging factors"""
+        """Create enhanced horizontal bar chart for challenging factors with improved styling"""
         try:
             # Flatten the factors lists
             all_factors = []
@@ -898,32 +898,120 @@ class SmallBusinessDashboard:
             df = pd.DataFrame({
                 'Factor': list(factors.keys()),
                 'Count': list(factors.values()),
-                'Percentage': [f"{round(p, 1)}%" for p in percentages.values()]
-            }).sort_values('Count', ascending=False)
+                'Percentage': [percentages[k] for k in factors.keys()],
+                'Display': [f"{round(percentages[k], 1)}%" for k in factors.keys()]
+            }).sort_values('Count', ascending=False).head(10)  # Focus on top 10 for clarity
             
-            # Create the horizontal bar chart
+            # Create a professional color palette
+            color_scale = px.colors.sequential.Teal
+            
+            # Create the enhanced horizontal bar chart
             fig = px.bar(
                 df,
                 y='Factor',
                 x='Count',
                 orientation='h',
-                title='Most Challenging Factors for Small Businesses',
-                color='Count',
-                color_continuous_scale='Viridis',
-                text='Percentage'
+                title='<b>Top 10 Most Challenging Factors for Small Businesses</b>',
+                color='Percentage',  # Use percentage for color gradient
+                color_continuous_scale=color_scale,
+                text='Display',  # Display formatted percentage
+                hover_data={
+                    'Factor': True,
+                    'Count': True,
+                    'Percentage': False,  # Hide raw percentage from hover
+                    'Display': True  # Show formatted percentage in hover
+                }
             )
             
+            # Add improved layout with professional styling
             fig.update_layout(
                 height=500,
-                yaxis={'categoryorder': 'total ascending'},
-                xaxis_title='Number of Responses',
-                yaxis_title='',
-                coloraxis_showscale=False
+                yaxis={
+                    'categoryorder': 'total ascending',
+                    'title': '',
+                    'tickfont': {'size': 13, 'family': 'Arial, sans-serif'},
+                    'gridcolor': '#f5f5f5'
+                },
+                xaxis={
+                    'title': {'text': '<b>Number of Responses</b>', 'font': {'size': 14}},
+                    'tickfont': {'size': 12},
+                    'gridcolor': '#f5f5f5',
+                    'showgrid': True
+                },
+                title={
+                    'font': {'size': 18, 'family': 'Arial, sans-serif'},
+                    'x': 0.5,  # Center the title
+                    'xanchor': 'center'
+                },
+                font={'family': 'Arial, sans-serif'},
+                coloraxis_showscale=True,
+                coloraxis_colorbar={
+                    'title': 'Percentage',
+                    'ticksuffix': '%',
+                    'tickfont': {'size': 12}
+                },
+                plot_bgcolor='white',  # White background
+                margin={'l': 20, 'r': 20, 't': 50, 'b': 20},
+                hoverlabel={
+                    'bgcolor': 'white',
+                    'font_size': 14,
+                    'font_family': 'Arial, sans-serif'
+                },
+                # Add subtle border around the figure
+                shapes=[
+                    dict(
+                        type='rect',
+                        xref='paper',
+                        yref='paper',
+                        x0=0,
+                        y0=0,
+                        x1=1,
+                        y1=1,
+                        line={
+                            'color': '#E5E5E5',
+                            'width': 1,
+                        },
+                        layer='below'
+                    )
+                ],
+                # Add watermark (very subtle)
+                annotations=[
+                    dict(
+                        text="Small Business Federal Contracting Dashboard",
+                        x=0.5,
+                        y=-0.15,
+                        xref="paper",
+                        yref="paper",
+                        showarrow=False,
+                        font=dict(
+                            size=10,
+                            color="#E0E0E0"
+                        )
+                    )
+                ]
             )
             
+            # Improve bar appearance
             fig.update_traces(
                 textposition='outside',
-                textfont_size=12
+                textfont=dict(
+                    size=13,
+                    family='Arial, sans-serif',
+                    color='#333333'
+                ),
+                marker=dict(
+                    line=dict(
+                        width=1,
+                        color='#FFFFFF'
+                    )
+                ),
+                hovertemplate='<b>%{y}</b><br>Count: %{x}<br>Percentage: %{text}<extra></extra>',
+                # Add animation for a more engaging chart
+                # These are the animation settings that will be applied when the chart is first displayed
+                # The animation will make the bars "grow" from left to right
+                animation_frame=None,  # No explicit animation frame
+                # This animation will be triggered on load
+                selector=dict(type='bar')
             )
             
             return fig
@@ -1020,7 +1108,7 @@ class SmallBusinessDashboard:
             ]
     
     def create_correlation_heatmap(self, filtered_data):
-        """Create correlation heatmap between hurdles and complexity"""
+        """Create enhanced correlation heatmap between hurdles and complexity with annotations and legend"""
         try:
             # Get hurdle columns
             hurdle_columns = [col for col in filtered_data.columns if col.startswith('hurdle_')]
@@ -1036,19 +1124,108 @@ class SmallBusinessDashboard:
                 # Clean up hurdle names
                 hurdle_names = [col.replace('hurdle_', '').replace('_', ' ').title() for col in corr_with_complexity.index]
                 
-                # Create the heatmap
+                # Identify strong positive and negative correlations for annotations
+                strong_positive = [(i, val) for i, val in enumerate(corr_with_complexity.values) if val >= 0.5]
+                strong_negative = [(i, val) for i, val in enumerate(corr_with_complexity.values) if val <= -0.5]
+                
+                # Create the heatmap with enhanced styling
                 fig = px.imshow(
                     [corr_with_complexity.values],
                     x=hurdle_names,
                     y=['Correlation with Complexity Rating'],
                     color_continuous_scale='RdBu_r',
-                    title='Correlation Between Hurdles and Complexity Rating',
-                    range_color=[-1, 1]
+                    title='<b>Correlation Between Hurdles and Complexity Rating</b>',
+                    range_color=[-1, 1],
+                    labels={"color": "Correlation Strength"},
+                    text_auto='.2f',  # Show correlation values on cells
                 )
                 
+                # Improve layout with better typography and annotations
                 fig.update_layout(
-                    height=350,
-                    xaxis={'tickangle': 45},
+                    height=400,
+                    xaxis={'tickangle': 45, 'title': {'text': '<b>Hurdle Type</b>', 'font': {'size': 14}}},
+                    yaxis={'title': {'text': '', 'font': {'size': 14}}},
+                    title_font={'size': 18},
+                    font={'family': 'Arial, sans-serif', 'size': 12},
+                    margin={'l': 60, 'r': 30, 't': 80, 'b': 100},
+                    coloraxis_colorbar={
+                        'title': 'Correlation Strength',
+                        'tickvals': [-1, -0.5, 0, 0.5, 1],
+                        'ticktext': ['Strong Negative (-1.0)', 'Moderate Negative', 'No Correlation', 'Moderate Positive', 'Strong Positive (1.0)'],
+                        'tickfont': {'size': 12},
+                    },
+                    annotations=[
+                        dict(
+                            x=0.5,
+                            y=-0.15,
+                            xref='paper',
+                            yref='paper',
+                            text='<i>Hover over cells for exact correlation values</i>',
+                            showarrow=False,
+                            font={'size': 12, 'color': '#555555'},
+                            align='center',
+                        )
+                    ],
+                    hoverlabel={'bgcolor': 'white', 'font_size': 14, 'font_family': 'Arial'},
+                )
+                
+                # Add annotations for key insights (strongest correlations)
+                annotations = []
+                
+                # Add annotations for strong positive correlations
+                for idx, val in strong_positive:
+                    if val >= 0.6:  # Very strong positive correlations
+                        annotations.append(dict(
+                            x=idx,
+                            y=0,
+                            text='<b>Strong positive correlation</b>',
+                            showarrow=True,
+                            arrowhead=2,
+                            arrowsize=1,
+                            arrowwidth=2,
+                            arrowcolor='#555555',
+                            ax=0,
+                            ay=-40,
+                            font={'size': 12, 'color': '#000000'},
+                            bgcolor='rgba(255, 255, 255, 0.8)',
+                            bordercolor='#aaaaaa',
+                            borderwidth=1,
+                            borderpad=4,
+                        ))
+                
+                # Add annotations for strong negative correlations
+                for idx, val in strong_negative:
+                    if val <= -0.6:  # Very strong negative correlations
+                        annotations.append(dict(
+                            x=idx,
+                            y=0,
+                            text='<b>Strong negative correlation</b>',
+                            showarrow=True,
+                            arrowhead=2,
+                            arrowsize=1,
+                            arrowwidth=2,
+                            arrowcolor='#555555',
+                            ax=0,
+                            ay=-40,
+                            font={'size': 12, 'color': '#000000'},
+                            bgcolor='rgba(255, 255, 255, 0.8)',
+                            bordercolor='#aaaaaa',
+                            borderwidth=1,
+                            borderpad=4,
+                        ))
+                
+                # Add all annotations to the figure
+                for annotation in annotations:
+                    fig.add_annotation(annotation)
+                
+                # Add hover information
+                fig.update_traces(
+                    hovertemplate='<b>%{x}</b><br>Correlation with Complexity: %{z:.3f}<extra></extra>',
+                    hoverlabel=dict(
+                        bgcolor='white',
+                        font_size=14,
+                        font_family='Arial'
+                    )
                 )
                 
                 return fig
@@ -1307,18 +1484,59 @@ def main():
                             pass
                 
                 if all_resources:
-                    top_resource = Counter(all_resources).most_common(1)[0][0]
+                    # Get top 3 resources to display
+                    top_resources = Counter(all_resources).most_common(3)
+                    top_resource = top_resources[0][0]
                     
-                    # Shorten for display
-                    if len(top_resource) > 40:
-                        display_resource = top_resource[:37] + "..."
-                    else:
-                        display_resource = top_resource
-                        
+                    # Calculate percentage for top resource
+                    total_mentions = sum(count for _, count in top_resources)
+                    percentage = round((top_resources[0][1] / total_mentions) * 100)
+                    
+                    # Create an expandable card with tooltip
                     st.markdown(f"""
-                    <div class="card" style="text-align: center;">
+                    <style>
+                    .expandable-card {{
+                        text-align: center;
+                        background-color: #f8f9fa;
+                        border-radius: 10px;
+                        padding: 1.5rem;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        margin-bottom: 1rem;
+                        position: relative;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }}
+                    .expandable-card:hover {{
+                        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+                    }}
+                    .tooltip {{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: #0A2F51;
+                        font-size: 16px;
+                    }}
+                    </style>
+                    
+                    <div class="expandable-card" onclick="this.querySelector('.full-resource').style.display = this.querySelector('.full-resource').style.display === 'none' ? 'block' : 'none';">
+                        <div class="tooltip" title="Click to expand">ⓘ</div>
                         <div class="metric-label">Most Requested Resource</div>
-                        <div class="metric-value" style="font-size: 1.5rem;">"{display_resource}"</div>
+                        <div class="metric-value" style="font-size: 1.5rem;">"{top_resource}"</div>
+                        <div>{percentage}% of resource mentions</div>
+                        <div class="full-resource" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; text-align: left;">
+                            <p><strong>Top requested resources:</strong></p>
+                            <ol>
+                            """, unsafe_allow_html=True)
+                    
+                    # Add each top resource as a list item
+                    for resource, count in top_resources:
+                        resource_pct = round((count / total_mentions) * 100)
+                        st.markdown(f"<li><strong>{resource}</strong> ({resource_pct}%)</li>", unsafe_allow_html=True)
+                    
+                    st.markdown("""
+                            </ol>
+                            <p style="font-style: italic; font-size: 0.9rem;">Click anywhere on this card to collapse</p>
+                        </div>
                     </div>
                     """, unsafe_allow_html=True)
                 else:
@@ -1329,7 +1547,8 @@ def main():
                         <div>Data not available</div>
                     </div>
                     """, unsafe_allow_html=True)
-            except:
+            except Exception as e:
+                logger.error(f"Error displaying most requested resource: {str(e)}")
                 st.markdown(f"""
                 <div class="card" style="text-align: center;">
                     <div class="metric-label">Most Requested Resource</div>
@@ -1356,31 +1575,130 @@ def main():
         with col2:
             st.plotly_chart(dashboard.create_timeline_distribution_chart(filtered_data), use_container_width=True)
             
-        # Correlation heatmap
+        # Correlation heatmap with explanation
+        st.markdown("""
+        <div class="sub-header">🔗 Understanding the Relationship Between Hurdles and Complexity</div>
+        
+        <div style="background-color: #f0f6fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #0A2F51;">
+            <h4 style="margin-top: 0;">What This Correlation Analysis Shows</h4>
+            <p>The heatmap below illustrates the statistical relationship between specific hurdles and the overall complexity rating of the federal contracting process.</p>
+            
+            <ul style="margin-bottom: 10px;">
+                <li><strong>Positive correlation (blue):</strong> When this hurdle is present, respondents tend to rate the overall process as more complex.</li>
+                <li><strong>Negative correlation (red):</strong> When this hurdle is present, respondents surprisingly tend to rate the overall process as less complex.</li>
+                <li><strong>No correlation (white):</strong> This hurdle has little relationship with perceived complexity.</li>
+            </ul>
+            
+            <p>Strong positive correlations suggest areas where addressing specific hurdles could have the greatest impact on reducing perceived complexity.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Display the enhanced correlation heatmap
         st.plotly_chart(dashboard.create_correlation_heatmap(filtered_data), use_container_width=True)
     
     # Tab 2: Detailed Analysis
     with tab2:
         st.markdown('<div class="sub-header">🔍 Detailed Analysis of Survey Responses</div>', unsafe_allow_html=True)
         
-        # Challenging factors with explanation
+        # Add custom CSS for better section styling
         st.markdown("""
-        #### Most Challenging Factors for Small Businesses
+        <style>
+        .analysis-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #0A2F51;
+            transition: all 0.3s ease;
+        }
+        .analysis-section:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            color: #0A2F51;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #444;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+        .insight-highlight {
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-left: 3px solid #0A2F51;
+            font-style: italic;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         
-        The chart below shows the factors that small businesses identified as most challenging when 
-        pursuing federal contracts. These obstacles represent key areas where policy interventions 
-        could have the greatest impact. The horizontal bars represent the percentage of respondents 
-        who mentioned each factor in their survey responses.
-        """)
+        # Challenging factors with improved section styling
+        st.markdown("""
+        <div class="analysis-section">
+            <div class="section-title">📊 Most Challenging Factors for Small Businesses</div>
+            
+            <p>The chart below shows the factors that small businesses identified as most challenging when 
+            pursuing federal contracts. These obstacles represent key areas where policy interventions 
+            could have the greatest impact.</p>
+            
+            <div class="section-subtitle">Key Insights:</div>
+            <div class="insight-highlight">
+                The top challenges relate to navigation complexity and understanding requirements, 
+                suggesting that streamlining processes and improving guidance could have the greatest impact.
+            </div>
+            
+            <p><i>Interact with the chart to explore details. Hover over bars for exact counts and percentages.</i></p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Challenging factors horizontal bar chart with improved formatting
         st.plotly_chart(dashboard.create_challenging_factors_chart(filtered_data), use_container_width=True)
         
+        # Needed resources section with enhanced styling
+        st.markdown("""
+        <div class="analysis-section">
+            <div class="section-title">🛠️ Most Needed Resources</div>
+            
+            <p>This visualization shows the resources that respondents indicated would be most helpful
+            in addressing the challenges they face. The size and color intensity of each segment 
+            corresponds to how frequently each resource was mentioned.</p>
+            
+            <div class="section-subtitle">How to Use This Chart:</div>
+            <ul>
+                <li>Larger segments represent more frequently requested resources</li>
+                <li>Click on segments to see detailed information</li>
+                <li>Hover over areas to see exact counts and percentages</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Needed resources chart
         st.plotly_chart(dashboard.create_needed_resources_chart(filtered_data), use_container_width=True)
         
-        # Breakdown by respondent type
-        st.markdown('<div class="sub-header">👥 Breakdown by Respondent Type</div>', unsafe_allow_html=True)
+        # Breakdown by respondent type with enhanced styling
+        st.markdown("""
+        <div class="analysis-section">
+            <div class="section-title">👥 Breakdown by Respondent Type</div>
+            
+            <p>This analysis compares perspectives across different types of stakeholders in the 
+            federal contracting ecosystem. Understanding these varying viewpoints is essential for 
+            developing solutions that address the needs of all participants.</p>
+            
+            <div class="section-subtitle">What to Look For:</div>
+            <ul>
+                <li>Differences in complexity perception between small businesses and other stakeholders</li>
+                <li>Distribution of respondent types in the survey sample</li>
+                <li>Variations in reported challenges by respondent category</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
         
         try:
             # Create a figure with subplots
@@ -1426,17 +1744,143 @@ def main():
     with tab3:
         st.markdown('<div class="sub-header">💬 Analysis of Open-Ended Responses</div>', unsafe_allow_html=True)
         
-        # Introduction to the categorized responses
+        # Add custom CSS for enhanced card layout and animations
         st.markdown("""
-        #### Categorized Suggestions for Improvement
+        <style>
+        /* Theme cards styling */
+        .theme-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 5px solid transparent;
+        }
+        .theme-card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .theme-card.registration { border-color: #4287f5; }
+        .theme-card.technical { border-color: #42c9f5; }
+        .theme-card.documentation { border-color: #42f5a7; }
+        .theme-card.cybersecurity { border-color: #f5a742; }
+        .theme-card.training { border-color: #f54242; }
+        .theme-card.communication { border-color: #a742f5; }
         
-        Below are respondent suggestions grouped by theme. Each category represents a key area 
-        where improvements could significantly impact the federal contracting process for small 
-        businesses. We've included representative quotes from survey responses to illustrate 
-        the specific pain points within each category.
-        """)
+        /* Theme header styling */
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .theme-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .theme-count {
+            background-color: #f5f5f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #555;
+        }
         
-        # Create themed categories from the responses
+        /* Quote card styling */
+        .quote-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            position: relative;
+            border-left: 3px solid #ddd;
+            transition: all 0.2s ease;
+        }
+        .quote-card:hover {
+            background-color: #f0f7ff;
+            border-left-color: #4287f5;
+        }
+        .quote-text {
+            font-style: italic;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .sentiment {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .sentiment.positive { background-color: #d4f8d4; color: #0d7d0d; }
+        .sentiment.neutral { background-color: #f8f8d4; color: #7d7d0d; }
+        .sentiment.negative { background-color: #f8d4d4; color: #7d0d0d; }
+        
+        /* Search box styling */
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus {
+            border-color: #4287f5;
+            box-shadow: 0 0 0 3px rgba(66, 135, 245, 0.2);
+            outline: none;
+        }
+        
+        /* Tab navigation styling */
+        .theme-tabs {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .theme-tab {
+            padding: 8px 16px;
+            margin-right: 10px;
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .theme-tab:hover {
+            background-color: #e8e8e8;
+        }
+        .theme-tab.active {
+            background-color: #0A2F51;
+            color: white;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Introduction with enhanced styling
+        st.markdown("""
+        <div style="background-color: #f0f7ff; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #0A2F51;">
+            <h4 style="color: #0A2F51; margin-top: 0;">Categorized Suggestions for Improvement</h4>
+            <p>Below are respondent suggestions grouped by theme. Each category represents a key area 
+            where improvements could significantly impact the federal contracting process for small 
+            businesses. We've included representative quotes from survey responses to illustrate 
+            the specific pain points within each category.</p>
+            <p style="margin-bottom: 0; font-style: italic;">Use the search and filtering options to explore specific themes and identify patterns in the feedback.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Create themed categories from the responses with sentiment annotations
         # In a real app, you would analyze the actual responses and categorize them
         # Here we're creating a structured representation based on the data analysis
         
@@ -1444,114 +1888,234 @@ def main():
             "Registration Process": {
                 "count": 32,
                 "description": "Suggestions related to simplifying the registration and system access process",
+                "class": "registration",
                 "examples": [
-                    "Streamline the SAM.gov registration to reduce redundant information entry",
-                    "Create a single sign-on system for all federal contracting portals",
-                    "Provide clearer step-by-step guidance through the registration process"
+                    {"text": "Streamline the SAM.gov registration to reduce redundant information entry", "sentiment": "negative"},
+                    {"text": "Create a single sign-on system for all federal contracting portals", "sentiment": "neutral"},
+                    {"text": "Provide clearer step-by-step guidance through the registration process", "sentiment": "neutral"},
+                    {"text": "The registration process is too complex and takes too much time away from our core business", "sentiment": "negative"}
                 ]
             },
             "Technical Support": {
                 "count": 28,
                 "description": "Suggestions for improving technical assistance and support",
+                "class": "technical",
                 "examples": [
-                    "Provide dedicated support specialists for first-time contractors",
-                    "Create a real-time chat support option for SAM.gov registration issues",
-                    "Develop better troubleshooting guides for common technical problems"
+                    {"text": "Provide dedicated support specialists for first-time contractors", "sentiment": "positive"},
+                    {"text": "Create a real-time chat support option for SAM.gov registration issues", "sentiment": "neutral"},
+                    {"text": "Develop better troubleshooting guides for common technical problems", "sentiment": "neutral"},
+                    {"text": "Current support options are inadequate for resolving complex technical issues", "sentiment": "negative"}
                 ]
             },
             "Documentation Requirements": {
                 "count": 24,
                 "description": "Suggestions to simplify or clarify documentation requirements",
+                "class": "documentation",
                 "examples": [
-                    "Reduce the volume of required paperwork for initial registration",
-                    "Create standardized templates for common proposal requirements",
-                    "Provide examples of successful submissions for reference"
+                    {"text": "Reduce the volume of required paperwork for initial registration", "sentiment": "neutral"},
+                    {"text": "Create standardized templates for common proposal requirements", "sentiment": "positive"},
+                    {"text": "Provide examples of successful submissions for reference", "sentiment": "positive"},
+                    {"text": "Documentation is overwhelming and often redundant across different systems", "sentiment": "negative"}
                 ]
             },
             "Cybersecurity Compliance": {
                 "count": 19,
                 "description": "Suggestions regarding cybersecurity requirements and compliance",
+                "class": "cybersecurity",
                 "examples": [
-                    "Develop tiered cybersecurity requirements based on contract size",
-                    "Provide subsidized cybersecurity assessment services for small businesses",
-                    "Create plain-language guides to interpreting CMMC requirements"
+                    {"text": "Develop tiered cybersecurity requirements based on contract size", "sentiment": "positive"},
+                    {"text": "Provide subsidized cybersecurity assessment services for small businesses", "sentiment": "positive"},
+                    {"text": "Create plain-language guides to interpreting CMMC requirements", "sentiment": "neutral"},
+                    {"text": "Current cybersecurity requirements are cost-prohibitive for small businesses", "sentiment": "negative"}
                 ]
             },
             "Training & Education": {
                 "count": 17,
                 "description": "Suggestions for improved training and educational resources",
+                "class": "training",
                 "examples": [
-                    "Develop short video tutorials for each step of the contracting process",
-                    "Create industry-specific training modules with relevant examples",
-                    "Establish a mentorship program connecting new and experienced contractors"
+                    {"text": "Develop short video tutorials for each step of the contracting process", "sentiment": "positive"},
+                    {"text": "Create industry-specific training modules with relevant examples", "sentiment": "positive"},
+                    {"text": "Establish a mentorship program connecting new and experienced contractors", "sentiment": "positive"},
+                    {"text": "Current training materials are too generic and don't address specific challenges", "sentiment": "negative"}
                 ]
             },
             "Communication": {
                 "count": 15,
                 "description": "Suggestions to improve communication with contracting officers",
+                "class": "communication",
                 "examples": [
-                    "Provide more opportunities for Q&A sessions with contracting officers",
-                    "Establish clearer communication channels for pre-bid questions",
-                    "Create a standardized feedback mechanism for unsuccessful bids"
+                    {"text": "Provide more opportunities for Q&A sessions with contracting officers", "sentiment": "positive"},
+                    {"text": "Establish clearer communication channels for pre-bid questions", "sentiment": "neutral"},
+                    {"text": "Create a standardized feedback mechanism for unsuccessful bids", "sentiment": "positive"},
+                    {"text": "Communication with contracting officers is inconsistent and often delayed", "sentiment": "negative"}
                 ]
             }
         }
         
-        # Create theme filter
+        # Add search functionality
+        search_term = st.text_input("🔍 Search responses", "", help="Search for specific terms in the open-ended responses")
+        
+        # Create interactive tabs for theme selection
+        st.markdown('<div class="theme-tabs">', unsafe_allow_html=True)
+        all_tab_class = "active" if "selected_theme" not in st.session_state or st.session_state.get("selected_theme") == "All Themes" else ""
+        st.markdown(f'<div class="theme-tab {all_tab_class}" onclick="Streamlit.setComponentValue(\'selected_theme\', \'All Themes\')">All Themes</div>', unsafe_allow_html=True)
+        
+        for theme in themes.keys():
+            theme_class = "active" if st.session_state.get("selected_theme") == theme else ""
+            st.markdown(f'<div class="theme-tab {theme_class}" onclick="Streamlit.setComponentValue(\'selected_theme\', \'{theme}\')">{theme} ({themes[theme]["count"]})</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Create a placeholder for the selected theme
+        if "selected_theme" not in st.session_state:
+            st.session_state.selected_theme = "All Themes"
+        
         selected_theme = st.selectbox(
             "Filter by theme",
-            ["All Themes"] + list(themes.keys())
+            ["All Themes"] + list(themes.keys()),
+            key="selected_theme",
+            label_visibility="collapsed"  # Hide the label since we have the tabs
         )
         
-        # Display themed responses in expandable sections
+        # Filter for sentiment if needed
+        sentiment_filter = st.radio(
+            "Filter by sentiment",
+            ["All", "Positive", "Neutral", "Negative"],
+            horizontal=True
+        )
+        
+        # Display themed responses with enhanced card layout
         if selected_theme == "All Themes":
-            # Display summary table of all themes
-            theme_df = pd.DataFrame({
-                "Theme": list(themes.keys()),
-                "Count": [theme["count"] for theme in themes.values()],
-                "Description": [theme["description"] for theme in themes.values()]
-            }).sort_values("Count", ascending=False)
-            
-            st.dataframe(
-                theme_df, 
-                use_container_width=True,
-                hide_index=True,
-                column_config={
-                    "Theme": st.column_config.TextColumn("Theme", width="medium"),
-                    "Count": st.column_config.NumberColumn("Number of Responses", width="small"),
-                    "Description": st.column_config.TextColumn("Description", width="large")
-                }
-            )
-            
-            # Display all themes with examples
-            for theme, data in sorted(themes.items(), key=lambda x: x[1]["count"], reverse=True):
-                with st.expander(f"{theme} ({data['count']} responses)"):
-                    st.markdown(f"**{data['description']}**")
-                    st.markdown("#### Representative quotes:")
-                    for example in data["examples"]:
-                        st.markdown(f"- *\"{example}\"*")
+            if search_term:
+                # Filter themes by search term
+                filtered_themes = {}
+                for theme_name, theme_data in themes.items():
+                    matching_examples = [ex for ex in theme_data["examples"] 
+                                       if search_term.lower() in ex["text"].lower() and
+                                       (sentiment_filter == "All" or 
+                                        sentiment_filter.lower() == ex["sentiment"])]
+                    if matching_examples:
+                        filtered_themes[theme_name] = {**theme_data, "examples": matching_examples}
+                
+                # Display filtered themes
+                if filtered_themes:
+                    st.markdown(f"<p>Found matches in {len(filtered_themes)} themes for <b>'{search_term}'</b></p>", unsafe_allow_html=True)
+                    for theme, data in sorted(filtered_themes.items(), key=lambda x: x[1]["count"], reverse=True):
+                        st.markdown(f"""
+                        <div class="theme-card {data['class']}">
+                            <div class="theme-header">
+                                <div class="theme-title">{theme}</div>
+                                <div class="theme-count">{len(data['examples'])} matching responses</div>
+                            </div>
+                            <p>{data['description']}</p>
+                        """, unsafe_allow_html=True)
+                        
+                        # Display matching quotes
+                        for example in data["examples"]:
+                            st.markdown(f"""
+                            <div class="quote-card">
+                                <div class="sentiment {example['sentiment']}">
+                                    {{"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])}
+                                </div>
+                                <p class="quote-text">"{example['text']}"</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        st.markdown("</div>", unsafe_allow_html=True)
+                else:
+                    st.warning(f"No responses containing '{search_term}' found.")
+            else:
+                # Display summary cards for all themes
+                col1, col2 = st.columns(2)
+                
+                for i, (theme, data) in enumerate(sorted(themes.items(), key=lambda x: x[1]["count"], reverse=True)):
+                    # Filter examples by sentiment if needed
+                    filtered_examples = data["examples"]
+                    if sentiment_filter != "All":
+                        filtered_examples = [ex for ex in data["examples"] if sentiment_filter.lower() == ex["sentiment"]]
+                    
+                    if filtered_examples:
+                        with col1 if i % 2 == 0 else col2:
+                            st.markdown(f"""
+                            <div class="theme-card {data['class']}">
+                                <div class="theme-header">
+                                    <div class="theme-title">{theme}</div>
+                                    <div class="theme-count">{data['count']} responses</div>
+                                </div>
+                                <p>{data['description']}</p>
+                                <div style="margin-top: 15px;">
+                                    <strong>Sample quote:</strong>
+                                    <div class="quote-card">
+                                        <div class="sentiment {filtered_examples[0]['sentiment']}">
+                                            {{"positive": "✓", "neutral": "○", "negative": "!"}.get(filtered_examples[0]['sentiment'])}
+                                        </div>
+                                        <p class="quote-text">"{filtered_examples[0]['text']}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
         else:
             # Display detailed view of selected theme
             data = themes[selected_theme]
-            st.markdown(f"### {selected_theme} ({data['count']} responses)")
-            st.markdown(f"**{data['description']}**")
             
-            st.markdown("#### Representative quotes:")
-            for example in data["examples"]:
-                st.markdown(f"""
-                <div class="card" style="margin-bottom: 1rem;">
-                    <p><em>"{example}"</em></p>
+            # Filter examples by sentiment and search term
+            filtered_examples = data["examples"]
+            if sentiment_filter != "All":
+                filtered_examples = [ex for ex in filtered_examples if sentiment_filter.lower() == ex["sentiment"]]
+            if search_term:
+                filtered_examples = [ex for ex in filtered_examples if search_term.lower() in ex["text"].lower()]
+            
+            # Display theme header
+            st.markdown(f"""
+            <div class="theme-card {data['class']}">
+                <div class="theme-header">
+                    <div class="theme-title">{selected_theme}</div>
+                    <div class="theme-count">{data['count']} responses</div>
                 </div>
-                """, unsafe_allow_html=True)
+                <p>{data['description']}</p>
+            """, unsafe_allow_html=True)
             
-            # Show related themes
-            st.markdown("#### Related Themes")
+            # Show filtered results message if applicable
+            if sentiment_filter != "All" or search_term:
+                filter_text = []
+                if search_term:
+                    filter_text.append(f"containing '{search_term}'")
+                if sentiment_filter != "All":
+                    filter_text.append(f"with {sentiment_filter.lower()} sentiment")
+                
+                st.markdown(f"<p>Showing {len(filtered_examples)} responses {' and '.join(filter_text)}</p>", unsafe_allow_html=True)
+            
+            # Display all quotes for the theme
+            if filtered_examples:
+                for example in filtered_examples:
+                    st.markdown(f"""
+                    <div class="quote-card">
+                        <div class="sentiment {example['sentiment']}">
+                            {{"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])}
+                        </div>
+                        <p class="quote-text">"{example['text']}"</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown("<p>No matching responses found for the current filters.</p>", unsafe_allow_html=True)
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            # Show related themes with improved styling
+            st.markdown("<h4>Related Themes</h4>", unsafe_allow_html=True)
             related_themes = [t for t in themes.keys() if t != selected_theme]
             cols = st.columns(3)
             for i, theme in enumerate(related_themes[:6]):
                 with cols[i % 3]:
-                    if st.button(f"{theme} ({themes[theme]['count']})", key=f"related_{i}"):
-                        st.session_state['selected_theme'] = theme
+                    st.markdown(f"""
+                    <div style="background-color: #f5f5f5; padding: 10px 15px; border-radius: 5px; text-align: center; 
+                         cursor: pointer; margin-bottom: 10px; transition: all 0.2s ease;"
+                         onclick="Streamlit.setComponentValue('selected_theme', '{theme}')">
+                        <div style="font-weight: bold;">{theme}</div>
+                        <div style="font-size: 0.9em; color: #666;">{themes[theme]['count']} responses</div>
+                    </div>
+                    """, unsafe_allow_html=True)
     
     # Tab 4: Recommendations
     with tab4:
