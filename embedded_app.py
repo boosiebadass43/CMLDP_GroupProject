@@ -1671,18 +1671,20 @@ def main():
         
         st.markdown("""
         <div class="card">
-            <h3>Actionable Path Forward</h3>
-            <p>Based on our analysis, we recommend the following immediate actions:</p>
-            
-            <ol>
-                <li><strong>Convene a Small Business Advisory Council</strong> comprising diverse stakeholders to provide ongoing feedback during implementation</li>
-                <li><strong>Conduct a Technical Assessment</strong> of existing systems to identify integration points for the centralized portal</li>
-                <li><strong>Develop a Phased Implementation Plan</strong> with clear milestones, starting with the most impactful improvements</li>
-                <li><strong>Establish Key Performance Indicators</strong> to track progress against the expected outcomes</li>
-                <li><strong>Allocate Development Resources</strong> to begin work on the centralized portal prototype</li>
-            </ol>
-            
-            <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
+            <div style="padding: 10px;">
+                <h3>Actionable Path Forward</h3>
+                <p>Based on our analysis, we recommend the following immediate actions:</p>
+                
+                <div style="margin-left: 20px; margin-bottom: 15px;">
+                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">1.</span> <strong>Convene a Small Business Advisory Council</strong> comprising diverse stakeholders to provide ongoing feedback during implementation</div>
+                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">2.</span> <strong>Conduct a Technical Assessment</strong> of existing systems to identify integration points for the centralized portal</div>
+                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">3.</span> <strong>Develop a Phased Implementation Plan</strong> with clear milestones, starting with the most impactful improvements</div>
+                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">4.</span> <strong>Establish Key Performance Indicators</strong> to track progress against the expected outcomes</div>
+                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">5.</span> <strong>Allocate Development Resources</strong> to begin work on the centralized portal prototype</div>
+                </div>
+                
+                <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
