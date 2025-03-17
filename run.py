@@ -1,44 +1,16 @@
-#!/usr/bin/env python
-"""
-Run script to start the Small Business Federal Contracting Dashboard.
-This script will check if NLTK data is available and download it if needed,
-then launch the Streamlit app.
-"""
+# Minimal entry point for Streamlit Cloud
+# The simplest possible approach for running the dashboard
 
 import os
 import sys
-import subprocess
-import nltk
 
-def setup_nltk():
-    """Check and download necessary NLTK data if needed"""
-    print("Checking NLTK resources...")
-    
-    # Create a directory for NLTK data
-    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
-    os.makedirs(nltk_data_dir, exist_ok=True)
-    
-    # Add to NLTK path
-    nltk.data.path.append(nltk_data_dir)
-    
-    # Check and download required resources
-    resources = ['punkt', 'stopwords', 'wordnet']
-    for resource in resources:
-        try:
-            nltk.data.find(f'corpora/{resource}')
-            print(f"✅ Resource '{resource}' is already available")
-        except LookupError:
-            print(f"📥 Downloading missing resource: '{resource}'...")
-            nltk.download(resource, download_dir=nltk_data_dir, quiet=False)
+# Make sure we can find our modules
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 
-def run_app():
-    """Start the Streamlit app"""
-    print("\n🚀 Starting the Small Business Federal Contracting Dashboard...")
-    subprocess.run(["streamlit", "run", "app.py"])
-
+# Import and run the main function
 if __name__ == "__main__":
-    # Check for and install NLTK data if needed
-    setup_nltk()
-    
-    # Run the Streamlit app
-    run_app()
+    # Import is inside the if block to prevent circular imports
+    from embedded_app import main
+    main()
