@@ -976,7 +976,7 @@ class SmallBusinessDashboard:
                     'tickfont': {'size': 12}
                 },
                 plot_bgcolor='white',  # White background
-                margin={'l': 50, 'r': 50, 't': 70, 'b': 50},
+                margin={'l': 20, 'r': 20, 't': 50, 'b': 20},
                 hoverlabel={
                     'bgcolor': 'white',
                     'font_size': 14,
@@ -1177,7 +1177,7 @@ class SmallBusinessDashboard:
                     },
                     title_font={'size': 18},
                     font={'family': 'Arial, sans-serif', 'size': 12},
-                    margin={'l': 100, 'r': 70, 't': 100, 'b': 150},  # Further increased margins for better readability
+                    margin={'l': 80, 'r': 50, 't': 80, 'b': 120},  # Increased margins
                     coloraxis_colorbar={
                         'title': 'Correlation Strength',
                         'titleside': 'right',
@@ -1341,117 +1341,70 @@ def main():
     # Custom CSS for professional styling
     st.markdown("""
     <style>
-    /* Global spacing and layout improvements */
-    .element-container {
-        padding: 10px 0px;
-    }
-    .stTabs [data-baseweb="tab-panel"] {
-        padding-top: 25px;
-    }
-    
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
         color: #0A2F51;
         text-align: center;
-        margin-bottom: 2rem;
-        padding: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
     }
-    
     .sub-header {
         font-size: 1.8rem;
         font-weight: bold;
         color: #0A2F51;
-        margin-top: 2.5rem;
-        margin-bottom: 1.5rem;
-        padding: 0.8rem 1rem;
-        border-left: 5px solid #0A2F51;
-        background-color: #f8f9fa;
-        border-radius: 0 5px 5px 0;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
     }
-    
-    /* Card styling with improved spacing and visual hierarchy */
     .card {
-        background-color: #ffffff;
+        background-color: #f8f9fa;
         border-radius: 10px;
-        padding: 1.8rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
         height: 180px; /* Fixed height for metric cards */
         display: flex;
         flex-direction: column;
         justify-content: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border: 1px solid #eee;
     }
-
-    .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-    
     .metric-value {
         font-size: 2.5rem;
         font-weight: bold;
         color: #0A2F51;
-        margin: 0.8rem 0;
+        margin: 0.5rem 0;
         line-height: 1.2;
     }
-    
     .metric-label {
-        font-size: 1.1rem;
-        font-weight: bold;
-        color: #444;
-        margin-bottom: 0.7rem;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 0.5rem;
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
     }
-    
     .insight-box {
         background-color: #e8f4f8;
         border-left: 5px solid #0A2F51;
-        padding: 1.2rem;
-        margin-bottom: 1.5rem;
-        border-radius: 0 5px 5px 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
-    
     .emoji-icon {
         font-size: 1.5rem;
-        margin-right: 0.8rem;
+        margin-right: 0.5rem;
     }
-    
     .highlight {
         color: #0A2F51;
         font-weight: bold;
     }
-    
     .section-spacer {
-        margin-top: 40px; 
-        margin-bottom: 40px;
-        border-bottom: 1px dashed #e0e0e0;
-        padding-bottom: 5px;
+        margin-top: 3rem; /* Adds significant vertical spacing between sections */
     }
-    
     .chart-container {
-        margin-bottom: 2.5rem;
-        padding: 1rem;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
     }
-    
     /* Expandable card styling to match fixed-height cards */
     .expandable-card {
         text-align: center;
-        background-color: #ffffff;
+        background-color: #f8f9fa;
         border-radius: 10px;
-        padding: 1.8rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid #eee;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 1rem;
         position: relative;
         cursor: pointer;
@@ -1754,7 +1707,7 @@ def main():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Add significant vertical spacing
-        st.markdown('<div class="section-spacer" style="margin-top: 40px; margin-bottom: 40px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-spacer"></div>', unsafe_allow_html=True)
         
         # Improved correlation heatmap section with better explanation and stats
         st.markdown('<div class="sub-header">🔗 Correlation Between Hurdles and Perceived Complexity</div>', unsafe_allow_html=True)
@@ -1790,9 +1743,6 @@ def main():
         
         # Display the enhanced correlation heatmap
         st.plotly_chart(dashboard.create_correlation_heatmap(filtered_data), use_container_width=True)
-        
-        # Add significant vertical spacing after the chart
-        st.markdown('<div class="section-spacer" style="margin-top: 40px; margin-bottom: 40px;"></div>', unsafe_allow_html=True)
     
     # Tab 2: Detailed Analysis
     with tab2:
@@ -1804,62 +1754,35 @@ def main():
         .analysis-section {
             background-color: #ffffff;
             border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 35px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
             border-left: 5px solid #0A2F51;
             transition: all 0.3s ease;
-            border: 1px solid #f0f0f0;
         }
-        
         .analysis-section:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        
         .section-title {
             color: #0A2F51;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
             border-bottom: 1px solid #e5e5e5;
-            padding-bottom: 12px;
-            font-weight: 600;
+            padding-bottom: 10px;
         }
-        
         .section-subtitle {
-            font-size: 1.2rem;
-            color: #333;
-            margin: 20px 0 12px 0;
+            font-size: 1.1rem;
+            color: #444;
+            margin: 15px 0 10px 0;
             font-weight: 600;
-            border-left: 3px solid #0A2F51;
-            padding-left: 10px;
         }
-        
         .insight-highlight {
             background-color: #f0f7ff;
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin: 20px 0;
-            border-left: 4px solid #0A2F51;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-left: 3px solid #0A2F51;
             font-style: italic;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* Improving text formatting */
-        p {
-            line-height: 1.7;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        ul, ol {
-            padding-left: 25px;
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-        
-        li {
-            margin-bottom: 8px;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -1886,9 +1809,6 @@ def main():
         # Challenging factors horizontal bar chart with improved formatting
         st.plotly_chart(dashboard.create_challenging_factors_chart(filtered_data), use_container_width=True)
         
-        # Add vertical spacing between sections
-        st.markdown('<div style="margin-top: 30px; margin-bottom: 30px;"></div>', unsafe_allow_html=True)
-        
         # Needed resources section with enhanced styling
         st.markdown("""
         <div class="analysis-section">
@@ -1909,9 +1829,6 @@ def main():
         
         # Needed resources chart
         st.plotly_chart(dashboard.create_needed_resources_chart(filtered_data), use_container_width=True)
-        
-        # Add vertical spacing between sections
-        st.markdown('<div style="margin-top: 30px; margin-bottom: 30px;"></div>', unsafe_allow_html=True)
         
         # Breakdown by respondent type with enhanced styling
         st.markdown("""
@@ -2543,109 +2460,23 @@ def main():
             st.markdown("""
             <style>
             .next-steps-list {
-                background-color: #ffffff;
+                background-color: #f8f9fa;
                 border-radius: 10px;
-                padding: 25px;
-                margin-top: 20px;
-                margin-bottom: 25px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                border: 1px solid #f0f0f0;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
-            
-            .next-steps-list:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-            }
-            
-            .step-item {
-                display: flex;
-                align-items: flex-start;
-                margin-bottom: 18px;
-                padding-bottom: 18px;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            
-            .step-item:last-child {
-                margin-bottom: 0;
-                padding-bottom: 0;
-                border-bottom: none;
-            }
-            
-            .step-number {
-                background-color: #0A2F51;
-                color: white;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-right: 15px;
-                font-weight: bold;
-                flex-shrink: 0;
-            }
-            
-            .step-content {
-                flex-grow: 1;
-            }
-            
-            .step-title {
-                font-weight: bold;
-                font-size: 1.1rem;
-                margin-bottom: 5px;
-                color: #333;
-            }
-            
-            .step-description {
-                color: #555;
-                line-height: 1.5;
+                padding: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
             </style>
             
             <div class="next-steps-list">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <div class="step-title">Convene a Small Business Advisory Council</div>
-                        <div class="step-description">Comprising diverse stakeholders to provide ongoing feedback during implementation and ensure solutions address real-world challenges.</div>
-                    </div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <div class="step-title">Conduct a Technical Assessment</div>
-                        <div class="step-description">Of existing systems to identify integration points for the centralized portal and determine technical requirements.</div>
-                    </div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <div class="step-title">Develop a Phased Implementation Plan</div>
-                        <div class="step-description">With clear milestones, starting with the most impactful improvements that can be achieved in the near term.</div>
-                    </div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <div class="step-title">Establish Key Performance Indicators</div>
-                        <div class="step-description">To track progress against the expected outcomes and measure the impact of implemented changes.</div>
-                    </div>
-                </div>
-                
-                <div class="step-item">
-                    <div class="step-number">5</div>
-                    <div class="step-content">
-                        <div class="step-title">Allocate Development Resources</div>
-                        <div class="step-description">To begin work on the centralized portal prototype and other high-priority implementation items.</div>
-                    </div>
-                </div>
-                
-                <hr style="margin-top: 25px; margin-bottom: 25px; border-color: #e5e5e5;">
-                <p style="font-style: italic; color: #555; text-align: center;">We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">1.</span> <strong>Convene a Small Business Advisory Council</strong> comprising diverse stakeholders to provide ongoing feedback during implementation</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">2.</span> <strong>Conduct a Technical Assessment</strong> of existing systems to identify integration points for the centralized portal</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">3.</span> <strong>Develop a Phased Implementation Plan</strong> with clear milestones, starting with the most impactful improvements</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">4.</span> <strong>Establish Key Performance Indicators</strong> to track progress against the expected outcomes</p>
+                <p><span style="color: #0A2F51; font-weight: bold;">5.</span> <strong>Allocate Development Resources</strong> to begin work on the centralized portal prototype</p>
+                <hr style="margin-top: 15px; margin-bottom: 15px; border-color: #e5e5e5;">
+                <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
             </div>
             """, unsafe_allow_html=True)
 
