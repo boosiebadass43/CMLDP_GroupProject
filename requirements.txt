@@ -8,3 +8,4 @@ pytz>=2020.1
 six>=1.16.0
 tenacity>=8.2.3
 tzdata>=2023.3
+regex>=2022.0.0

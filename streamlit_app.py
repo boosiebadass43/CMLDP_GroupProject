@@ -1,6 +1,18 @@
 # This is the main entry point for Streamlit Cloud
-# Simply importing and running the embedded_app version which has all dependencies packaged
+# Import and run the embedded_app version which has all dependencies packaged
 
-import embedded_app
+import sys
+import os
 
-# This file exists solely as the entry point for Streamlit Cloud deployment
+# If running in Streamlit Cloud, we need to ensure the current directory is in the path
+# so Python can find our modules
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+
+# Import the main function from embedded_app
+from embedded_app import main
+
+# Execute the main function to run the dashboard
+if __name__ == "__main__":
+    main()
