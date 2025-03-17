@@ -2182,7 +2182,7 @@ def main():
                             st.markdown(f"""
                             <div class="quote-card">
                                 <div class="sentiment {example['sentiment']}">
-                                    {{"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])}
+                                    {"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])
                                 </div>
                                 <p class="quote-text">"{example['text']}"</p>
                             </div>
@@ -2214,7 +2214,7 @@ def main():
                                     <strong>Sample quote:</strong>
                                     <div class="quote-card">
                                         <div class="sentiment {filtered_examples[0]['sentiment']}">
-                                            {{"positive": "✓", "neutral": "○", "negative": "!"}.get(filtered_examples[0]['sentiment'])}
+                                            {"positive": "✓", "neutral": "○", "negative": "!"}.get(filtered_examples[0]['sentiment'])
                                         </div>
                                         <p class="quote-text">"{filtered_examples[0]['text']}"</p>
                                     </div>
@@ -2258,7 +2258,7 @@ def main():
                     st.markdown(f"""
                     <div class="quote-card">
                         <div class="sentiment {example['sentiment']}">
-                            {{"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])}
+                            {"positive": "✓", "neutral": "○", "negative": "!"}.get(example['sentiment'])
                         </div>
                         <p class="quote-text">"{example['text']}"</p>
                     </div>
@@ -2302,8 +2302,8 @@ def main():
                     
                     <style>
                     .theme-{theme_class} {{
-                        --theme-color: {{'registration': '#0066cc', 'technical': '#00a3cc', 'documentation': '#00cc66', 
-                                       'cybersecurity': '#ff9900', 'training': '#cc3300', 'communication': '#9900cc'}}['{theme_class}'];
+                        --theme-color: {'registration': '#0066cc', 'technical': '#00a3cc', 'documentation': '#00cc66', 
+                                       'cybersecurity': '#ff9900', 'training': '#cc3300', 'communication': '#9900cc'}['{theme_class}'];
                     }}
                     </style>
                     """, unsafe_allow_html=True)
