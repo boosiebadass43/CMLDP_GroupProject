@@ -1669,22 +1669,29 @@ def main():
         # Next Steps section
         st.markdown('<div class="sub-header">👣 Next Steps</div>', unsafe_allow_html=True)
         
+        # Use separate elements for the different parts of the card to avoid formatting issues
         st.markdown("""
         <div class="card">
-            <div style="padding: 10px;">
-                <h3>Actionable Path Forward</h3>
-                <p>Based on our analysis, we recommend the following immediate actions:</p>
-                
-                <div style="margin-left: 20px; margin-bottom: 15px;">
-                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">1.</span> <strong>Convene a Small Business Advisory Council</strong> comprising diverse stakeholders to provide ongoing feedback during implementation</div>
-                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">2.</span> <strong>Conduct a Technical Assessment</strong> of existing systems to identify integration points for the centralized portal</div>
-                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">3.</span> <strong>Develop a Phased Implementation Plan</strong> with clear milestones, starting with the most impactful improvements</div>
-                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">4.</span> <strong>Establish Key Performance Indicators</strong> to track progress against the expected outcomes</div>
-                    <div style="margin-bottom: 10px;"><span style="font-weight: bold; color: #0A2F51;">5.</span> <strong>Allocate Development Resources</strong> to begin work on the centralized portal prototype</div>
-                </div>
-                
-                <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
-            </div>
+            <h3>Actionable Path Forward</h3>
+            <p>Based on our analysis, we recommend the following immediate actions:</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Create next steps using Streamlit components rather than HTML
+        next_steps = [
+            "**Convene a Small Business Advisory Council** comprising diverse stakeholders to provide ongoing feedback during implementation",
+            "**Conduct a Technical Assessment** of existing systems to identify integration points for the centralized portal",
+            "**Develop a Phased Implementation Plan** with clear milestones, starting with the most impactful improvements",
+            "**Establish Key Performance Indicators** to track progress against the expected outcomes",
+            "**Allocate Development Resources** to begin work on the centralized portal prototype"
+        ]
+        
+        for i, step in enumerate(next_steps, 1):
+            st.markdown(f"**{i}.** {step}")
+            
+        st.markdown("""
+        <div class="card" style="margin-top: 20px;">
+            <p>We recommend quarterly progress reviews with stakeholders to ensure implementations remain aligned with small business needs.</p>
         </div>
         """, unsafe_allow_html=True)
 
