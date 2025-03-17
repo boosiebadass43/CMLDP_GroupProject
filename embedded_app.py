@@ -880,8 +880,25 @@ class SmallBusinessDashboard:
             
             fig.update_layout(
                 height=600,
-                yaxis={'categoryorder': 'total ascending'},
-                coloraxis_showscale=False
+                yaxis={
+                    'categoryorder': 'total ascending',
+                    'tickfont': {'color': '#E0E0E0'},
+                    'title': {'font': {'color': '#E0E0E0'}},
+                    'gridcolor': '#444444',
+                    'zerolinecolor': '#444444'
+                },
+                xaxis={
+                    'tickfont': {'color': '#E0E0E0'},
+                    'title': {'font': {'color': '#E0E0E0'}},
+                    'gridcolor': '#444444',
+                    'zerolinecolor': '#444444'
+                },
+                paper_bgcolor='#1E1E1E',
+                plot_bgcolor='#1E1E1E',
+                font={'color': '#E0E0E0'},
+                title={'font': {'color': '#E0E0E0'}},
+                coloraxis_showscale=False,
+                margin={'l': 50, 'r': 50, 't': 70, 'b': 70}
             )
             
             return fig
@@ -968,19 +985,22 @@ class SmallBusinessDashboard:
                     'x': 0.5,  # Center the title
                     'xanchor': 'center'
                 },
-                font={'family': 'Arial, sans-serif'},
+                font={'family': 'Arial, sans-serif', 'color': '#E0E0E0'},
                 coloraxis_showscale=True,
                 coloraxis_colorbar={
                     'title': 'Percentage',
                     'ticksuffix': '%',
-                    'tickfont': {'size': 12}
+                    'tickfont': {'size': 12, 'color': '#E0E0E0'},
+                    'title_font': {'color': '#E0E0E0'}
                 },
-                plot_bgcolor='white',  # White background
-                margin={'l': 50, 'r': 50, 't': 70, 'b': 50},
+                plot_bgcolor='#1E1E1E',  # Dark background for dark mode
+                paper_bgcolor='#1E1E1E',  # Dark paper background
+                margin={'l': 50, 'r': 50, 't': 70, 'b': 70},  # Increased bottom margin
                 hoverlabel={
-                    'bgcolor': 'white',
+                    'bgcolor': '#333333',
                     'font_size': 14,
-                    'font_family': 'Arial, sans-serif'
+                    'font_family': 'Arial, sans-serif',
+                    'font_color': '#FFFFFF'
                 },
                 # Add subtle border around the figure
                 shapes=[
@@ -993,24 +1013,24 @@ class SmallBusinessDashboard:
                         x1=1,
                         y1=1,
                         line={
-                            'color': '#E5E5E5',
+                            'color': '#444444',
                             'width': 1,
                         },
                         layer='below'
                     )
                 ],
-                # Add watermark (very subtle)
+                # Add a more subtle annotation instead of the watermark
                 annotations=[
                     dict(
-                        text="Small Business Federal Contracting Dashboard",
-                        x=0.5,
-                        y=-0.15,
+                        text="Federal Contracting Data",
+                        x=0.99,
+                        y=0.01,
                         xref="paper",
                         yref="paper",
                         showarrow=False,
                         font=dict(
                             size=10,
-                            color="#E0E0E0"
+                            color="#666666"
                         )
                     )
                 ]
@@ -1162,29 +1182,36 @@ class SmallBusinessDashboard:
                     text_auto='.2f',  # Show correlation values on cells
                 )
                 
-                # Improve layout with better typography, annotations, and increased margins
+                # Improve layout with better typography, annotations, increased margins, and dark mode compatibility
                 fig.update_layout(
                     height=450,  # Increased height to prevent crowding
                     xaxis={
                         'tickangle': 45, 
-                        'title': {'text': '<b>Hurdle Type</b>', 'font': {'size': 14}},
-                        'tickfont': {'size': 11},  # Smaller font size for tick labels
-                        'automargin': True  # Auto-adjust margins for labels
+                        'title': {'text': '<b>Hurdle Type</b>', 'font': {'size': 14, 'color': '#E0E0E0'}},
+                        'tickfont': {'size': 11, 'color': '#E0E0E0'},  # Smaller font size for tick labels with light color
+                        'automargin': True,  # Auto-adjust margins for labels
+                        'gridcolor': '#444444',  # Dark grid lines
+                        'zerolinecolor': '#444444'  # Dark zero line
                     },
                     yaxis={
-                        'title': {'text': '', 'font': {'size': 14}},
-                        'automargin': True  # Auto-adjust margins for labels
+                        'title': {'text': '', 'font': {'size': 14, 'color': '#E0E0E0'}},
+                        'automargin': True,  # Auto-adjust margins for labels
+                        'tickfont': {'color': '#E0E0E0'},
+                        'gridcolor': '#444444',  # Dark grid lines
+                        'zerolinecolor': '#444444'  # Dark zero line
                     },
-                    title_font={'size': 18},
-                    font={'family': 'Arial, sans-serif', 'size': 12},
+                    title_font={'size': 18, 'color': '#E0E0E0'},
+                    font={'family': 'Arial, sans-serif', 'size': 12, 'color': '#E0E0E0'},
                     margin={'l': 100, 'r': 70, 't': 100, 'b': 150},  # Further increased margins for better readability
+                    paper_bgcolor='#1E1E1E',  # Dark paper background
+                    plot_bgcolor='#1E1E1E',   # Dark plot background
                     coloraxis_colorbar={
                         'title': 'Correlation Strength',
                         'titleside': 'right',
                         'ticks': 'outside',
                         'tickvals': [-1, -0.5, 0, 0.5, 1],
                         'ticktext': ['Strong Negative (-1.0)', 'Moderate Negative', 'No Correlation', 'Moderate Positive', 'Strong Positive (1.0)'],
-                        'tickfont': {'size': 12},
+                        'tickfont': {'size': 12, 'color': '#E0E0E0'},
                         'len': 0.8,  # Shorter colorbar
                         'y': 0.5,    # Center colorbar
                         'yanchor': 'middle'
@@ -1320,6 +1347,125 @@ class SmallBusinessDashboard:
 
 # Main application UI
 def main():
+    # Add dark mode compatibility CSS
+    st.markdown("""
+    <style>
+    /* Dark mode compatibility - Ensure text and elements have sufficient contrast */
+    .stMarkdown, p, h1, h2, h3, h4, h5, h6, li, .metric-label, .metric-value {
+        color: #E0E0E0 !important;
+    }
+    
+    /* Override background colors for dark mode */
+    .card, .analysis-section, .correlation-explanation, .expandable-card, .next-steps-list, .insight-highlight {
+        background-color: #2D2D2D !important;
+        border-color: #444 !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Fix section headers */
+    .main-header, .sub-header, .section-title, .correlation-title, .section-subtitle {
+        color: #E0E0E0 !important;
+        background-color: #333333 !important;
+        border-left-color: #4B5CFF !important;
+    }
+    
+    /* Fix stats and highlights */
+    .correlation-stats, .insight-highlight {
+        background-color: #333333 !important;
+        color: #E0E0E0 !important;
+        border-left-color: #4B5CFF !important;
+    }
+    
+    /* Fix step items on recommendation tab */
+    .step-item {
+        display: flex !important;
+        margin-bottom: 15px !important;
+        align-items: flex-start !important;
+        border-bottom-color: #444 !important;
+    }
+    
+    .step-number {
+        background-color: #4B5CFF !important;
+        color: white !important;
+        border-radius: 50% !important;
+        width: 30px !important;
+        height: 30px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 15px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .step-content {
+        flex-grow: 1 !important;
+    }
+    
+    .step-title {
+        font-weight: bold !important;
+        margin-bottom: 5px !important;
+        color: #E0E0E0 !important;
+    }
+    
+    .step-description {
+        color: #CCCCCC !important;
+    }
+    
+    /* Fix spacing between elements */
+    .element-container {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Add container overflow fixes */
+    .stContainer, .element-container, .stMarkdown, .st-ae, .st-af {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    
+    /* Fix Executive Summary overflow */
+    .st-ae {
+        overflow-y: auto !important;
+        max-height: 600px !important;
+    }
+    
+    /* Add scrollable overflow for long sections */
+    .stExpander {
+        overflow-y: auto !important;
+        max-height: 80vh !important;
+    }
+    
+    /* Fix sentiment indicators */
+    .sentiment {
+        border: 1px solid #444 !important;
+    }
+    
+    .sentiment.positive {
+        background-color: rgba(0, 128, 0, 0.2) !important;
+        color: #A0FFA0 !important;
+    }
+    
+    .sentiment.neutral {
+        background-color: rgba(128, 128, 128, 0.2) !important;
+        color: #E0E0E0 !important;
+    }
+    
+    .sentiment.negative {
+        background-color: rgba(255, 0, 0, 0.2) !important;
+        color: #FFA0A0 !important;
+    }
+    
+    /* Fix quote card styling */
+    .quote-card {
+        background-color: #333 !important;
+        border-color: #444 !important;
+    }
+    
+    .quote-text {
+        color: #E0E0E0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     # Initialize dashboard with error handling
     try:
         # Initialize dashboard
@@ -1439,9 +1585,26 @@ def main():
     .chart-container {
         margin-bottom: 2.5rem;
         padding: 1rem;
-        background-color: #ffffff;
+        background-color: #2D2D2D !important;
         border-radius: 10px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid #444 !important;
+    }
+    
+    /* Fix SVG text to be visible on dark backgrounds */
+    svg text, .js-plotly-plot text {
+        fill: #E0E0E0 !important;
+    }
+    
+    /* Fix axis lines and grids for dark mode */
+    .js-plotly-plot .xgrid, .js-plotly-plot .ygrid,
+    .js-plotly-plot .xtick, .js-plotly-plot .ytick {
+        stroke: #444 !important;
+    }
+    
+    /* Fix plotly charts minimum heights to prevent squishing */
+    .js-plotly-plot, .plotly-graph-div {
+        min-height: 350px !important;
     }
     
     /* Expandable card styling to match fixed-height cards */
@@ -1595,18 +1758,22 @@ def main():
     # Sidebar additional information
     with st.sidebar.expander("ℹ️ About This Dashboard"):
         st.markdown("""
+        <div style="color: #E0E0E0;">
         This dashboard analyzes survey data from stakeholders in the federal contracting ecosystem to identify barriers facing 
         small businesses seeking government contracts.
         
-        **Data Sources:**
-        - Survey responses from small business owners
-        - Government procurement officials
-        - Large contractors
-        - Consultants and other stakeholders
+        <strong>Data Sources:</strong>
+        <ul>
+        <li>Survey responses from small business owners</li>
+        <li>Government procurement officials</li>
+        <li>Large contractors</li>
+        <li>Consultants and other stakeholders</li>
+        </ul>
         
-        **Methodology:**
+        <strong>Methodology:</strong>
         The data was cleaned, processed, and analyzed using Python with visualization via Plotly.
-        """)
+        </div>
+        """, unsafe_allow_html=True)
     
     # Tabs for organization
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -1960,11 +2127,20 @@ def main():
                 row=1, col=2
             )
             
-            # Update layout
+            # Update layout with dark mode compatibility
             fig.update_layout(
                 height=500,
-                showlegend=False
+                showlegend=False,
+                paper_bgcolor='#1E1E1E',  # Dark paper background
+                plot_bgcolor='#1E1E1E',   # Dark plot background
+                font={'color': '#E0E0E0'}, # Light text for dark background
+                margin={'l': 50, 'r': 50, 't': 70, 'b': 70},
+                xaxis={'tickfont': {'color': '#E0E0E0'}, 'gridcolor': '#444444'},
+                yaxis={'tickfont': {'color': '#E0E0E0'}, 'gridcolor': '#444444'}
             )
+            
+            # Update subplot titles for dark mode
+            fig.update_annotations(font_color='#E0E0E0')
             
             # Display the figure
             st.plotly_chart(fig, use_container_width=True)
